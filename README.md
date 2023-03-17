@@ -215,7 +215,6 @@ function App() {
     ).then((response) => { embed(response.EmbedUrl) })
   }, [dashboardRef]);
 
-
   return (
     <>
       <h3>Your Dashboard</h3>
