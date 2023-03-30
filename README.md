@@ -156,9 +156,9 @@ After successful save your screen should look as on the screenshot below.
 ![](./Picture5.png)
 
 5.	To deploy the API, follow these steps:
--	Click on the "Actions" button and select Deploy API
--	In the Deployment stage select the option [New Stage]
--	Give your new stage a name, such as embed, and click on the Deploy button.
+-	Click on the *Actions* button and select Deploy API
+-	In the Deployment stage select the option *[New Stage]*
+-	Give your new stage a name, such as *embed*, and click on the Deploy button.
 
 ## Step 4: In Amazon QuickSight, add your domain to the allowed your domains
 
@@ -211,7 +211,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("https://xiw2a6h5gj.execute-api.eu-central-1.amazonaws.com/test/anonymous-embed-sample"
+    fetch("https://#######.execute-api.########.amazonaws.com/embed/anonymous-embed"
     ).then((response) => response.json()
     ).then((response) => { embed(response.EmbedUrl) })
   }, [dashboardRef]);
