@@ -184,7 +184,7 @@ The code below is a React component that embeds an Amazon QuickSight dashboard. 
 1.	useState Hooks: used to define a state of the variable.
 2.	useRef Hook: used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
 3.	useEffect() Hook: The useEffect() hook is used to trigger the embedding of the QuickSight dashboard whenever the selected dashboard ID changes. It first fetches the dashboard URL for the selected ID from the Amazon QuickSight API using the fetch() method. Once the URL is retrieved, it calls the embed() function with the URL as the argument.
-4. The purpose of createEmbeddingContext is to generate an embedding context object that can be used to configure and interact with the QuickSight embedding SDK. It generates an object that can be used to configure and interact with the QuickSight embedding SDK in a secure and efficient manner. 
+4. The purpose of createEmbeddingContext is to generate an embedding context object that can be used to configure and interact with the QuickSight embedding SDK. 
 
 ```
 import './App.css';
