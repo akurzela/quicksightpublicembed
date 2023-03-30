@@ -18,6 +18,14 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 - An Amazon Quicksight account with session capacity pricing enabled
 -	An Amazon Quicksight dashboard (see [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html) for more detailed steps on how to create one)
 -	A sample React appliacation ([here](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) you can find steps on how to start)
+
+## Step 0: Create your Amazon Quicksight dashboard
+For your convenience, sample analyses are automatically generated when you create an account in Amazon QuickSight. 
+- Business overview
+- People overview
+- Sales pipeline
+- Web and marketing analytics
+These datasets were created by 47Lining, an AWS Advanced Consulting Partner with Big Data Competency designation.
 ## Step 1: In your AWS account, set up permissions for unauthenticated viewers
 Create a policy in AWS Identity and Access Management (IAM) that your application will assume on behalf of the viewer. Go to **Policies** and select **Create policy** button. Next, choose a JSON tab and paste a policy that looks as following:
 ```
@@ -227,3 +235,5 @@ export default App;
 ```
 
 Now it’s time to test your app. Start your application running `npm start` in your terminal. 
+
+![](./Demo.png)
