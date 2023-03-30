@@ -175,15 +175,14 @@ In order to activate capacity pricing, go to the settings and select **Your subs
 
 ## Step 6: Call Amazon API Gateway from your React application
 In your React project folder, go to your root directory and run: `npm i amazon-quicksight-embedding-sdk` to install amazon-quicksight-embedding-sdk package.
-In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
+In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
 YOUR_DASHBOARD_ID with one dashboardId from your DashboardIdList.
 
 Code snippet below represents an example of the App.js file in your React project. 
 The code below is a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
 
-1.	State Hooks: Sstate hook is defined using the useState() hook from React
--	dashboardRef
-2.	Ref Hook: A ref hook is defined using the useRef() hook from React. It is used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
+1.	useState Hooks: used to define a state of the variable.
+2.	useRef Hook: used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
 3.	useEffect() Hook: The useEffect() hook is used to trigger the embedding of the QuickSight dashboard whenever the selected dashboard ID changes. It first fetches the dashboard URL for the selected ID from the Amazon QuickSight API using the fetch() method. Once the URL is retrieved, it calls the embed() function with the URL as the argument.
 4. The purpose of createEmbeddingContext is to generate an embedding context object that can be used to configure and interact with the QuickSight embedding SDK. It generates an object that can be used to configure and interact with the QuickSight embedding SDK in a secure and efficient manner. 
 
@@ -211,7 +210,7 @@ function App() {
   };
 
   useEffect(() => {
-    fetch("https://#######.execute-api.########.amazonaws.com/embed/anonymous-embed"
+    fetch("YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME"
     ).then((response) => response.json()
     ).then((response) => { embed(response.EmbedUrl) })
   }, [dashboardRef]);
