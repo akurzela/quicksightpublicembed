@@ -20,12 +20,28 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 -	A sample React appliacation ([here](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) you can find steps on how to start)
 
 ## Step 0: Create your Amazon Quicksight dashboard
-For your convenience, sample analyses are automatically generated when you create an account in Amazon QuickSight. 
+In the AWS console, search for Quicksight or use [this](https://quicksight.aws.amazon.com/) link.
+
+### Create an analysis
+In the left hand side menu navigate to *Analyses* and click on the *New analysis* button in the right top corner. 
+You will be able to see sample datasets automatically generated when you create an account in Amazon QuickSight. 
 - Business overview
 - People overview
 - Sales pipeline
 - Web and marketing analytics
 These datasets were created by 47Lining, an AWS Advanced Consulting Partner with Big Data Competency designation.
+
+### Add a visual
+Pick *People Overview* and select *USE IN ANALYSIS*
+![](./Pick_dataset.png)
+Click on the field wells to to expand the fields. 
+![](./Quicksight_Step1.png)
+In the field list on the lef hand side, pick *Business Function* and place it in the Y axis, then pick *Employee ID* and place it in the Value field. Next, in the visual types menu select a *Pie chart*. 
+![](./Quicksight_Step2.png)
+
+### Change the title
+Next, double-click on the title of the visual *Count of Employee Id by Business Function* and change it to: *Employee Business Function Percentage Split*. 
+![](./Title.png)
 ## Step 1: In your AWS account, set up permissions for unauthenticated viewers
 Create a policy in AWS Identity and Access Management (IAM) that your application will assume on behalf of the viewer. Go to **Policies** and select **Create policy** button. Next, choose a JSON tab and paste a policy that looks as following:
 ```
