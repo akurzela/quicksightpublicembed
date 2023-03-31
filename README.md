@@ -51,7 +51,7 @@ Select *Publish Dashboard as*, give it a name ie. *"My Awesome Dashboard"* and c
 ![](./Images/Quicksight_Step4.png)
 
 ## Step 1: Create your react application
-Go to your Cloud9 instance and create React app using `npx create-creact-app quicksightembedreact` command. It will generate a React project for you.
+Go to your Cloud9 instance and create React app using `npx create-react-app quicksightembedreact` command. It will generate a React project for you.
 ![](./Images/Cloud9_Step1.png)
 
 ## Step 2: In your AWS account, set up permissions for unauthenticated viewers
