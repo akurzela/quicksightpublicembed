@@ -42,6 +42,13 @@ In the field list on the lef hand side, pick *Business Function* and place it in
 ### Change the title
 Next, double-click on the title of the visual *Count of Employee Id by Business Function* and change it to: *Employee Business Function Percentage Split*. 
 ![](./Title.png)
+
+### Publish the dashboard
+Navigate to the top right corner and click on the *publish icon*. Next, select *publish dashboard*.
+![](./Quicksight_Step3.png)
+
+Select *Publish Dashboard as*, give it a name ie. *"My Awesome Dashboard"* and click on "Publish dashboard"
+![](./Quicksight_Step4.png)
 ## Step 1: In your AWS account, set up permissions for unauthenticated viewers
 Create a policy in AWS Identity and Access Management (IAM) that your application will assume on behalf of the viewer. Go to **Policies** and select **Create policy** button. Next, choose a JSON tab and paste a policy that looks as following:
 ```
