@@ -138,7 +138,7 @@ def lambda_handler(event, context):
         response = getQuickSightDashboardUrl(awsAccountId, dashboardIdList, dashboardRegion)
        
         return {'statusCode':200,
-                'headers': {"Access-Control-Allow-Origin": "http://localhost:3000",
+                'headers': {"Access-Control-Allow-Origin": "[CLOUD9URLPLACEHOLDER]",
                             "Content-Type":"text/plain"},
                 'body':json.dumps(response)
                 } 
@@ -146,13 +146,13 @@ def lambda_handler(event, context):
 
     except Exception as e: #catch all
         return {'statusCode':400,
-                'headers': {"Access-Control-Allow-Origin": "http://localhost:3000",
+                'headers': {"Access-Control-Allow-Origin": "[CLOUD9URLPLACEHOLDER]",
                             "Content-Type":"text/plain"},
                 'body':json.dumps('Error: ' + str(e))
                 }     
 ```
 
-If you don’t use localhost, replace `http://localhost:3000` in the returns with the hostname of your application. If you use cloud9, it will
+Replace `[CLOUD9URLPLACEHOLDER]` in the returns with the hostname of your cloud9 instance. It should look simmilar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com/**
 
 Go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
 
@@ -200,7 +200,7 @@ After successful save your screen should look as on the screenshot below.
 
 ![](./Images/Picture6.png)
 
-In the Amazon Quicksight console, go to **Manage Quicksight** (see the picture above) and add your application URL to the allowed domain list. If it is just for the testing purposes for now, just put the `https://localhost:<PortNumber>`. Make sure to replace`<PortNumber>` to match your local setup. See the picture below:
+In the Amazon Quicksight console, go to **Manage Quicksight** (see the picture above) and add your cloud9 URL to the allowed domain list. See the picture below:
 
 ![](./Images/Picture7.png)
 
@@ -262,7 +262,9 @@ function App() {
 export default App;
 ```
 
-Now it’s time to test your app. Start your application running `npm start` in your terminal. To preview your app, click on **Preview** and select **Preview Running Application**.
+Now it’s time to test your app. Start your application running `npm start` in your terminal. To preview your app, click on **Preview** and select **Preview Running Application**. If the dashboard doesn't load in the preview - click on the Pop into new Window button.
+
+![](./Images/Demo1.png)
 
 ![](./Images/Cloud9_Step2.png)
 
