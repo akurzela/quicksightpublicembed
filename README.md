@@ -264,8 +264,8 @@ export default App;
 
 Now it’s time to test your app. Start your application running `npm start` in your terminal. To preview your app, click on **Preview** and select **Preview Running Application**. If the dashboard doesn't load in the preview - click on the Pop into new Window button.
 
-![](./Images/Demo1.png)
-
 ![](./Images/Cloud9_Step2.png)
+
+![](./Images/Demo1.png)
 
 ![](./Images/Demo.png)
