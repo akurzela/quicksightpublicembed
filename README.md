@@ -152,7 +152,7 @@ def lambda_handler(event, context):
                 }     
 ```
 
-Replace `[CLOUD9URLPLACEHOLDER]` in the returns with the hostname of your cloud9 instance. It should look simmilar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com/**
+Replace `[CLOUD9URLPLACEHOLDER]` in the returns with the Origin URL of your cloud9 instance. It should look simmilar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com/**. You can copose it using the cloud9 URL, ie. https://us-east-1.console.aws.amazon.com/cloud9/ide/[STRING_TO_PUT_IN_PLACE_OF_###########].
 
 Go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
 
@@ -212,7 +212,6 @@ In order to activate capacity pricing, go to the settings and select **Your subs
 ## Step 7: Call Amazon API Gateway from your React application
 In your React project folder, go to your root directory and run: `npm i amazon-quicksight-embedding-sdk` to install amazon-quicksight-embedding-sdk package.
 In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
-YOUR_DASHBOARD_ID with one dashboardId from your DashboardIdList.
 
 Code snippet below represents an example of the App.js file in your React project. 
 The code below is a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
