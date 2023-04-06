@@ -19,7 +19,22 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 -	An Amazon Quicksight dashboard (see [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html) for more detailed steps on how to create one)
 -	A sample React appliacation ([here](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) you can find steps on how to start)
 
-## Step 0: Create your Amazon Quicksight dashboard
+## AWS Workshop Portal
+
+If you are on **WebDevConf** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
+
+## Step 0: Create your Cloud9 environment and your Amazon Quicksight dashboard
+
+### Cloud9 Environment
+In the AWS console, search for Cloud9 or use [this](https://console.aws.amazon.com/cloud9/home?region=us-east-1) link and click on the orange button to create a Cloud9 environment:
+
+![](./Images/cloud9-create.png)
+
+Fill in the form using the same information from the images below:
+![](./Images/cloud9-wiz1.png)
+![](./Images/cloud9-wiz2.png)
+
+### Quicksight Dashboard
 In the AWS console, search for Quicksight or use [this](https://quicksight.aws.amazon.com/) link.
 
 ### Create an analysis
