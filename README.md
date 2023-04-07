@@ -1,6 +1,6 @@
 # How to Publicly embed your quicksight dashboard into your react application using aws sdk
 
-Using embedded analytics from Amazon Quicksight can simplify the process of equipping your application with functional visualisations without any complex development. There are multiple ways to embed Amazon Quicksight dashboards into application. In this workshop we will look at how it can be done using React and AWS SDK. 
+Using embedded analytics from Amazon Quicksight can simplify the process of equipping your application with functional visualisations without any complex development. There are multiple ways to embed Amazon Quicksight dashboards into applications. In this workshop we will look at how it can be done using React and the AWS SDK. 
 
 Today we will work with:
 1.	Amazon Quicksight
@@ -12,18 +12,17 @@ Below you can find an architecture of the solution we are going to deploy.
 
 ![](./Images/Architecture.png)
 
-Above, a user makes a request to Amazon API gateway that executes a Lambda function which in turn will make a call to QuickSight to request an embed URL that returns the dashboard. Lambda function assumes a role that has required permissions to create anonymous embed URLs. 
+Above, a user makes a request to Amazon API gateway that executes a Lambda function which in turn will make a call to QuickSight to request an embed URL that returns the dashboard. The Lambda function assumes a role that has the required permissions to create anonymous embed URLs. 
 ## Prerequisites
 - An AWS Account
-- An Amazon Quicksight account with session capacity pricing enabled
--	An Amazon Quicksight dashboard (see [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html) for more detailed steps on how to create one)
--	A sample React appliacation ([here](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) you can find steps on how to start)
+- An Amazon Quicksight account
+-	Optional: An Amazon Quicksight dashboard (see [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html) for more detailed steps on how to create one) - alternatively, we will create one in Step 0
 
 ## Step 0: Create your Amazon Quicksight dashboard
 In the AWS console, search for Quicksight or use [this](https://quicksight.aws.amazon.com/) link.
 
 ### Create an analysis
-In the left hand side menu navigate to *Analyses* and click on the *New analysis* button in the right top corner. 
+In the left hand side menu navigate to **Analyses** and click on the **New analysis** button in the right top corner. 
 You will be able to see sample datasets automatically generated when you create an account in Amazon QuickSight. 
 - Business overview
 - People overview
@@ -32,11 +31,11 @@ You will be able to see sample datasets automatically generated when you create 
 These datasets were created by 47Lining, an AWS Advanced Consulting Partner with Big Data Competency designation.
 
 ### Add a visual
-Pick *People Overview* and select *USE IN ANALYSIS*
+Pick **People Overview** and select **USE IN ANALYSIS**
 ![](./Images/Pick_dataset.png)
 Click on the field wells to to expand the fields. 
 ![](./Images/Quicksight_Step1.png)
-In the field list on the lef hand side, pick *Business Function* and place it in the Y axis, then pick *Employee ID* and place it in the Value field. Next, in the visual types menu select a *Pie chart*. 
+In the field list on the left-hand side, pick *Business Function* and place it in the Y axis, then pick *Employee ID* and place it in the Value field. Next, in the visual types menu at the bottom select a *Pie chart*. 
 ![](./Images/Quicksight_Step2.png)
 
 ### Change the title
@@ -44,18 +43,22 @@ Next, double-click on the title of the visual *Count of Employee Id by Business 
 ![](./Images/Title.png)
 
 ### Publish the dashboard
-Navigate to the top right corner and ficlick on the *publish icon*. Next, select *publish dashboard*.
+Navigate to the top right corner and click the share-button to publish the analysis as a dashboard. Next, select **Publish dashboard**.
 ![](./Images/Quicksight_Step3.png)
 
-Select *Publish Dashboard as*, give it a name ie. *"My Awesome Dashboard"* and click on "Publish dashboard"
+Select **Publish new dashboard as**, give it a name ie. *My Awesome Dashboard* and click on **Publish dashboard**
 ![](./Images/Quicksight_Step4.png)
 
 ## Step 1: Create your react application
-Go to your Cloud9 instance and create React app using `npx create-react-app quicksightembedreact` command. It will generate a React project for you.
+Back in the AWS console, search for Cloud9 and open the Cloud9 IDE if you already have one. If not, click on **Create environment**, type in a name and click **Create** at the bottom of the page. Wait until the creation has finished until you open the Cloud9 IDE.
+
+In the terminal at the bottom of the Cloud9 IDE, create a React app using the `npx create-react-app quicksightembedreact` command. It will generate a React project for you.
 ![](./Images/Cloud9_Step1.png)
 
 ## Step 2: In your AWS account, set up permissions for unauthenticated viewers
-Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your application will assume on behalf of the viewer. Go to **Policies** and select **Create policy** button. Next, choose a JSON tab and paste a policy that looks as following:
+Back in the console, go to AWS Identity and Access Management (IAM). 
+
+Create a policy in IAM for a role that your application will assume on behalf of the viewer. Go to **Policies** and click the **Create policy** button. Next, choose the JSON tab and paste a policy that looks as following:
 ```
 {
     "Version": "2012-10-17",
@@ -65,8 +68,8 @@ Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your
                 "quicksight:GenerateEmbedUrlForAnonymousUser"
             ],
             "Resource": [
-                "arn:aws:quicksight:**:**:namespace/default",
-                "arn:aws:quicksight:**:**:dashboard/<YOUR_DASHBOARD_ID>"
+                "arn:aws:quicksight:*:*:namespace/default",
+                "arn:aws:quicksight:*:*:dashboard/<YOUR_DASHBOARD_ID>"
             ],
             "Effect": "Allow"
         },
@@ -76,31 +79,34 @@ Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "**",
+            "Resource": "*",
             "Effect": "Allow"
         }
     ]
 }
 ```
-Give your policy name like: **AnonymousEmbedPolicy** and select **Create policy** button.
+Give your policy name like: *AnonymousEmbedPolicy* and click the **Create policy** button.
 
 ![](./Images/Picture1.png)
-Next, create a role to which we will be attaching the **AnonymousEmbedPolicy**.
-Go to **Roles** and select **Create role** button. 
+Next, create a role to which we will be attaching the *AnonymousEmbedPolicy*.
+Go to **Roles** and click the **Create role** button. 
 As a trusted entity select: **Lambda** and in the next screen search for **AnonymousEmbedPolicy**. 
-Check the box next to the policy name and select **Next**. 
-In the Name, Review, Create section, give your role a name like: **AnonymousEmbedRole**. Make sure that the policy name is included in the **Add permissions** section.
+Check the box next to the policy name and click **Next**. 
+In the Name, Review, Create section, give your role a name like: *AnonymousEmbedRole*. Make sure that the policy name is included in the *Add permissions* section.
+
 ## Step 3: Generate anonymous embed URL lambda
 
-Create a lambda function that generates the embed URL for the dashboard.  
+Create a Lambda function that generates the embed URL for the dashboard.  
 
-In the AWS Console Go to Lambda and select function button.
+In the AWS Console go to Lambda and click the **Create function** button.
 Choose:
 - Author from scratch
-- Function Name: AnonymousEmbedFunction
+- Function Name: *AnonymousEmbedFunction*
 - Runtime: Python 3.9
 - Execution role: Use an existing role
-- Select AnonymousEmbedRole from drop down. Click Create function.
+- Select *AnonymousEmbedRole* from drop down. 
+
+Click **Create function**.
 In the Code tab, paste the code below:
 
 ```
@@ -152,69 +158,72 @@ def lambda_handler(event, context):
                 }     
 ```
 
-Replace `[CLOUD9URLPLACEHOLDER]` in the returns with the Origin URL of your cloud9 instance. It should look simmilar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com/**. You can copose it using the cloud9 URL, ie. https://us-east-1.console.aws.amazon.com/cloud9/ide/[STRING_TO_PUT_IN_PLACE_OF_###########].
+Replace `[CLOUD9URLPLACEHOLDER]` in both of the returns with the origin URL of your Cloud9 instance. It should look similar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com**. You can compose it using the Cloud9 URL, ie. https://us-east-1.console.aws.amazon.com/cloud9/ide/[STRING_TO_PUT_IN_PLACE_OF_###########]. Make sure to not include a slash at the end of the string.
 
-Go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
+Go to the **Configuration** tab and in the **General configuration** click the **Edit** button. Increase the timeout from 3 to 30 sec and hit the **Save** button.
 
-Next, go to the Environment variables and select Edit button. Add following environment variables and select Save button. Those values you can find in the URL of your dashboard.
+Next, go to the **Environment variables** and click the **Edit** button. Add the following environment variables and click the **Save** button. These values you can find in the URL of your dashboard.
 
 `https://us-east-1.quicksight.aws.amazon.com/sn/dashboards/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 
-- DashboardIdList : `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-- DashboardNameList : `NAME_OF_YOUR_DASHBOARD`
-- DashboardRegion : `REGION_OF_YOUR_DASHBOARD`
+- DashboardIdList : `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx` (see URL)
+- DashboardNameList : `NAME_OF_YOUR_DASHBOARD` (the one you set in Step 0)
+- DashboardRegion : `REGION_OF_YOUR_DASHBOARD` (see URL)
 
 ![](./Images/Picture2.png)
 
-Next go back to the Code tab and select Deploy button.
+Next go back to the **Code** tab and click the **Deploy** button.
 
 ## Step 4: Setup API Gateway to invoke AnonymousEmbedFunction Lambda function
 
-1.	In your AWS console, go to **API Gateway**, find a **REST API** section and select **Build** button.
-In the **Create new API** section select **New API**. In the API name enter **QuicksightAnonymousEmbed** and select **Create API** button (see the picture below)
+1.	In your AWS console, go to **API Gateway**, find the **REST API** section and click the **Build** button.
+In the **Create new API** section select **New API**. In the API name enter *QuicksightAnonymousEmbed* and click the **Create API** button (see the picture below)
 
 ![](./Images/Picture3.png)
 
-2.	Select **Actions** button and select **Create Resource** and enter **anonymous-embed** in the **Resource Name**. Next, select **Create Resource**.
-3.	Select **anonymous-embed** resource and select **Action** button, then select **Create Method** and choose **GET**. 
-In the **GET** method setup select **Lambda Function** as an integration type, enable **Lambda proxy integration** option and in the field **Lambda Function** search for previously created **AnonymousEmbedFunction**. Click **Save** and **OK** (See the picture below).
+2.	Click the **Actions** button, select **Create Resource** and enter *anonymous-embed* in the **Resource Name**. Next, click **Create Resource**.
+3.	Select *anonymous-embed* resource and click the **Action** button, then select **Create Method** and choose **GET**. 
+In the **GET** method setup select **Lambda Function** as an integration type, enable **Lambda proxy integration** option and in the field **Lambda Function** search for the previously created *AnonymousEmbedFunction*. Click **Save** and **OK** (See the picture below).
 
 ![](./Images/Picture4.png)
 
-4.	Now, in order to enable dashboard functionality to switch between dashboards, let’s create HTTP Request Header to process custom headers that are passed from the app when the dashboard is selected.
--	Select **GET** method
--	Go to HTTP Request Header section 
+4.	Now, in order to enable dashboard functionality to switch between dashboards, let’s create a HTTP Request Header to process custom headers that are passed from the app when the dashboard is selected.
+-	Select the **GET** method
+- Click on **Method Request**
+-	Go to the HTTP Request Header section 
 -	Select **Add header**
--	Set **X-Custom-Header** as the name and save
+-	Set *X-Custom-Header* as the name and save
 
-After successful save your screen should look as on the screenshot below.
+After the successful save your screen should look as on the screenshot below.
 
 ![](./Images/Picture5.png)
 
 5.	To deploy the API, follow these steps:
--	Click on the *Actions* button and select Deploy API
--	In the Deployment stage select the option *[New Stage]*
--	Give your new stage a name, such as *embed*, and click on the Deploy button.
+-	Click on the **Actions** button and select **Deploy API**
+-	In the Deployment stage select the option **[New Stage]**
+-	Give your new stage a name, such as *embed*, and click on the **Deploy** button.
+
+Make note of the URL shown at the top of the page, you will need to insert this later into your React code (Step 7).
 
 ## Step 5: In Amazon QuickSight, add your domain to the allowed your domains
+In the Amazon Quicksight console, click the user-icon in the top right and go to **Manage Quicksight** and add your Cloud9 URL to the allowed domain list. See the picture below:
 
 ![](./Images/Picture6.png)
-
-In the Amazon Quicksight console, go to **Manage Quicksight** (see the picture above) and add your cloud9 URL to the allowed domain list. See the picture below:
-
-![](./Images/Picture7.png)
 
 ## Step 6: Turn on capacity pricing
 If you don't have session capacity pricing enabled, follow the steps below. It’s mandatory to have this function enabled to proceed further.
 
-In order to activate capacity pricing, go to the settings and select **Your subscriptions**. Next select **Get monthly subscription** in the **Capacity pricing** section and select **Confirm subscription** button. 
+In order to activate capacity pricing, click on **Your subscriptions** on the left. Next, select **Get monthly subscription** in the **Capacity pricing** section and select **Confirm subscription** button. 
 
 ## Step 7: Call Amazon API Gateway from your React application
-In your React project folder, go to your root directory and run: `npm i amazon-quicksight-embedding-sdk` to install amazon-quicksight-embedding-sdk package.
-In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
+Go back to your Cloud9 IDE. In your React project folder, go to your root directory and run: `npm i amazon-quicksight-embedding-sdk` to install amazon-quicksight-embedding-sdk package.
 
-Code snippet below represents an example of the App.js file in your React project. 
-The code below is a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
+Go to your App.js file and replace the existing code with the code snippet below. Make sure to replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
+
+Quicksight may put a warning on line 24 that the command *fetch* is not defined. You can ignore this.
+
+The Code snippet below represents an example of the App.js file in your React project. 
+It is a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
 
 1.	useState Hooks: used to define a state of the variable.
 2.	useRef Hook: used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
