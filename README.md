@@ -248,6 +248,44 @@ Open a terminal inside your Cloud9 instance and type the following commands:
 cd quicksightembedreact
 npm i amazon-quicksight-embedding-sdk
 ```
+Replace the contents of your **App.css** file, that is used to style and layout your web page, with the content from the code snipped below:
+
+```
+body {
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+main {
+  margin: 20px;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+```
 
 Replace the contents of your App.js file with the contents from the code snipped below:
 
@@ -281,9 +319,15 @@ function App() {
   }, [dashboardRef]);
 
   return (
-    <>
-      <h3>Your Dashboard</h3>
-      <div ref={dashboardRef} />
+   <>
+      <header>
+        <h1>Embedded <font color="orange">QuickSight</font>: Build Powerful Dashboards in React</h1>
+      </header>
+      <main>
+        <p>Welcome to the Quicksight dashboard embedding sample page</p>
+        <p>Please find below your embedded dashboard</p>
+        <div ref={dashboardRef} />
+      </main>
     </>
   );
 };
