@@ -19,7 +19,32 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 -	An Amazon Quicksight dashboard (see [AWS documentation](https://docs.aws.amazon.com/quicksight/latest/user/example-analysis.html) for more detailed steps on how to create one)
 -	A sample React appliacation ([here](https://reactjs.org/docs/create-a-new-react-app.html#create-react-app) you can find steps on how to start)
 
-## Step 0: Create your Amazon Quicksight dashboard
+## AWS Workshop Portal
+
+If you are on **WebDevConf** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
+
+## Step 0: Create your Cloud9 environment and your Amazon Quicksight dashboard
+
+### Cloud9 Environment
+In the AWS console, search for Cloud9 or use [this](https://console.aws.amazon.com/cloud9/home?region=us-east-1) link and click on the orange button to create a Cloud9 environment:
+
+![](./Images/cloud9-create.png)
+
+Fill in the form using the same information from the images below:
+![](./Images/cloud9-wiz1.png)
+![](./Images/cloud9-wiz2.png)
+
+### Quicksight Environment
+In the AWS console, search for QuickSight or use [this](https://quicksight.aws.amazon.com/) link. In case Amazon QuickSight is acessed for the first time, it needs to be configured for use. If this is your case, you will be presented with a screen like the one below:
+![](./Images/qs-1.png)
+
+Click on *Sign up for QuickSight* and you will be presented with an account configuration form. Select *Enterprise* and click on *Continue*:
+![](./Images/qs-2.png)
+
+Finally, leave all options in their defaults and make sure you configure an account name and a notification e-mail address. The account name should be in the format **webdevconf-MY_AMZN_LOGIN** and the notification e-mail should be your own amazon e-mail address. An example for user lddecaro@ is shown below:
+![](./Images/qs-4.png)
+
+### Quicksight Dashboard
 In the AWS console, search for Quicksight or use [this](https://quicksight.aws.amazon.com/) link.
 
 ### Create an analysis
@@ -50,6 +75,9 @@ Navigate to the top right corner and ficlick on the *publish icon*. Next, select
 Select *Publish Dashboard as*, give it a name ie. *"My Awesome Dashboard"* and click on "Publish dashboard"
 ![](./Images/Quicksight_Step4.png)
 
+After publishing your dashboard, write down in a separate notepad `<YOUR_DASHBOARD_ID>` from the URL of your web browser. For your convenience, this is highlighted in the image below:
+![](./Images/qs-5.png)
+
 ## Step 1: Create your react application
 Go to your Cloud9 instance and create React app using `npx create-react-app quicksightembedreact` command. It will generate a React project for you.
 ![](./Images/Cloud9_Step1.png)
@@ -65,8 +93,8 @@ Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your
                 "quicksight:GenerateEmbedUrlForAnonymousUser"
             ],
             "Resource": [
-                "arn:aws:quicksight:**:**:namespace/default",
-                "arn:aws:quicksight:**:**:dashboard/<YOUR_DASHBOARD_ID>"
+                "arn:aws:quicksight:*:*:namespace/default",
+                "arn:aws:quicksight:*:*:dashboard/<YOUR_DASHBOARD_ID>"
             ],
             "Effect": "Allow"
         },
@@ -76,7 +104,7 @@ Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your
                 "logs:CreateLogStream",
                 "logs:PutLogEvents"
             ],
-            "Resource": "**",
+            "Resource": "*",
             "Effect": "Allow"
         }
     ]
@@ -92,12 +120,23 @@ Check the box next to the policy name and select **Next**.
 In the Name, Review, Create section, give your role a name like: **AnonymousEmbedRole**. Make sure that the policy name is included in the **Add permissions** section.
 ## Step 3: Generate anonymous embed URL lambda
 
+### Retrieving the Cloud9 hostname
+On your Cloud9, click on *Preview* and *Preview Running Application*. 
+![](./Images/cloud9-1.png)
+Cloud9 will try to open an emdedded browser and we need to click on the icon from the image below to try to open it a new browser window.
+![](./Images/cloud9-2.png)
+Then, we need to copy the URL from the new browser window so we can use it on a later moment. For now, write down the URL in the format **https://#######################.vfs.cloud9.us-east-1.amazonaws.com** on a separate note. We will use this URL to replace the value of the placeholder `[CLOUD9URLPLACEHOLDER]` in the next step. 
+
+Make sure you **do not** add the forward slash at the end.
+
+![](./Images/cloud9-3.png)
+
 Create a lambda function that generates the embed URL for the dashboard.  
 
 In the AWS Console Go to Lambda and select function button.
 Choose:
 - Author from scratch
-- Function Name: AnonymousEmbedFunction
+- Function Name: **AnonymousEmbedFunction**
 - Runtime: Python 3.9
 - Execution role: Use an existing role
 - Select AnonymousEmbedRole from drop down. Click Create function.
@@ -152,17 +191,17 @@ def lambda_handler(event, context):
                 }     
 ```
 
-Replace `[CLOUD9URLPLACEHOLDER]` in the returns with the Origin URL of your cloud9 instance. It should look simmilar to **https://#######################.vfs.cloud9.us-east-1.amazonaws.com/**. You can copose it using the cloud9 URL, ie. https://us-east-1.console.aws.amazon.com/cloud9/ide/[STRING_TO_PUT_IN_PLACE_OF_###########].
+Replace `[CLOUD9URLPLACEHOLDER]` with the value of the Cloud9 hostname that we obtained at the start of this step.
 
-Go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
+Next, go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
 
-Next, go to the Environment variables and select Edit button. Add following environment variables and select Save button. Those values you can find in the URL of your dashboard.
+Then, go to the Environment variables and select Edit button. Add the following environment variables and select Save button.
 
-`https://us-east-1.quicksight.aws.amazon.com/sn/dashboards/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-
-- DashboardIdList : `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- DashboardIdList : <YOUR_DASHBOARD_ID> you obtained on Step 0, in the format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
 - DashboardNameList : `NAME_OF_YOUR_DASHBOARD`
 - DashboardRegion : `REGION_OF_YOUR_DASHBOARD`
+
+Your configuration should look **similar** to the example from the image below:
 
 ![](./Images/Picture2.png)
 
@@ -175,7 +214,7 @@ In the **Create new API** section select **New API**. In the API name enter **Qu
 
 ![](./Images/Picture3.png)
 
-2.	Select **Actions** button and select **Create Resource** and enter **anonymous-embed** in the **Resource Name**. Next, select **Create Resource**.
+2.	Select **Actions** button and select **Create Resource** and enter **anonymous-embed** in the **Resource Name**. Next, select **Enable API Gateway CORS** and **Create Resource**.
 3.	Select **anonymous-embed** resource and select **Action** button, then select **Create Method** and choose **GET**. 
 In the **GET** method setup select **Lambda Function** as an integration type, enable **Lambda proxy integration** option and in the field **Lambda Function** search for previously created **AnonymousEmbedFunction**. Click **Save** and **OK** (See the picture below).
 
@@ -198,28 +237,27 @@ After successful save your screen should look as on the screenshot below.
 
 ## Step 5: In Amazon QuickSight, add your domain to the allowed your domains
 
-![](./Images/Picture6.png)
-
-In the Amazon Quicksight console, go to **Manage Quicksight** (see the picture above) and add your cloud9 URL to the allowed domain list. See the picture below:
-
-![](./Images/Picture7.png)
+Open QuickSight, click on the user icon at the top right hand side and go to Manage Quicksight:
+![](./Images/qs-6.png)
+Next, add the Cloud9 hostname that was obtained on Step 3 following sequence of steps from the image below:
+![](./Images/qs-7.png)
 
 ## Step 6: Turn on capacity pricing
-If you don't have session capacity pricing enabled, follow the steps below. It’s mandatory to have this function enabled to proceed further.
 
-In order to activate capacity pricing, go to the settings and select **Your subscriptions**. Next select **Get monthly subscription** in the **Capacity pricing** section and select **Confirm subscription** button. 
+On the **Manage QuickSight** screen, go to **Your Subscriptions**. Next, select **Get monthly subscription** in the **Capacity pricing** section and select **Confirm subscription** button.
+
+Verify if the QuickSight version is set to **Enterprise**. On the top left hand side, you should see the QuickSight version:
+![](./Images/qs-8.png)
 
 ## Step 7: Call Amazon API Gateway from your React application
-In your React project folder, go to your root directory and run: `npm i amazon-quicksight-embedding-sdk` to install amazon-quicksight-embedding-sdk package.
-In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`".
 
-Code snippet below represents an example of the App.js file in your React project. 
-The code below is a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
+Open a terminal inside your Cloud9 instance and type the following commands: 
+```
+cd quicksightembedreact
+npm i amazon-quicksight-embedding-sdk
+```
 
-1.	useState Hooks: used to define a state of the variable.
-2.	useRef Hook: used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
-3.	useEffect() Hook: The useEffect() hook is used to trigger the embedding of the QuickSight dashboard whenever the selected dashboard ID changes. It first fetches the dashboard URL for the selected ID from the Amazon QuickSight API using the fetch() method. Once the URL is retrieved, it calls the embed() function with the URL as the argument.
-4. The purpose of createEmbeddingContext is to generate an embedding context object that can be used to configure and interact with the QuickSight embedding SDK. 
+Replace the contents of your App.js file with the contents from the code snipped below:
 
 ```
 import './App.css';
@@ -260,8 +298,18 @@ function App() {
 
 export default App;
 ```
+In your App.js file replace: `YOUR_API_GATEWAY_INVOKE_URL/STAGE_NAME/RESOURCE_NAME` with your Amazon API Gateway invoke URL and your resource name (ie."`https://xxxxxxxx.execute-api.xx-xxx-x.amazonaws.com/embed/anonymous-embed`". As a convenience, the image below shows how to obtain the URL:
 
-Now it’s time to test your app. Start your application running `npm start` in your terminal. To preview your app, click on **Preview** and select **Preview Running Application**. If the dashboard doesn't load in the preview - click on the Pop into new Window button.
+![](./Images/apigw-url.png)
+
+Your App.js contains a React component that embeds an Amazon QuickSight dashboard. Here is an overview of what each part of the code does:
+
+1.	useState Hooks: used to define a state of the variable.
+2.	useRef Hook: used to hold a reference to the DOM element where the QuickSight dashboard will be embedded.
+3.	useEffect() Hook: The useEffect() hook is used to trigger the embedding of the QuickSight dashboard whenever the selected dashboard ID changes. It first fetches the dashboard URL for the selected ID from the Amazon QuickSight API using the fetch() method. Once the URL is retrieved, it calls the `embed()` function with the URL as the argument.
+4. The purpose of `createEmbeddingContext` is to generate an embedding context object that can be used to configure and interact with the QuickSight embedding SDK. 
+
+Now, it’s time to test your app. Start your application running `npm start` in your terminal. To preview your app, click on **Preview** and select **Preview Running Application**. If the dashboard doesn't load in the preview - click on the Pop into new Window button.
 
 ![](./Images/Cloud9_Step2.png)
 
