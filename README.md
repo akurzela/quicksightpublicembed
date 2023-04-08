@@ -220,17 +220,9 @@ In the **GET** method setup select **Lambda Function** as an integration type, e
 
 ![](./Images/Picture4.png)
 
-4.	Now, in order to enable dashboard functionality to switch between dashboards, let’s create HTTP Request Header to process custom headers that are passed from the app when the dashboard is selected.
--	Select **GET** method
--	Go to HTTP Request Header section 
--	Select **Add header**
--	Set **X-Custom-Header** as the name and save
-
-After successful save your screen should look as on the screenshot below.
-
 ![](./Images/Picture5.png)
 
-5.	To deploy the API, follow these steps:
+4.	To deploy the API, follow these steps:
 -	Click on the *Actions* button and select Deploy API
 -	In the Deployment stage select the option *[New Stage]*
 -	Give your new stage a name, such as *embed*, and click on the Deploy button.
