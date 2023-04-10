@@ -220,17 +220,9 @@ In the **GET** method setup select **Lambda Function** as an integration type, e
 
 ![](./Images/Picture4.png)
 
-4.	Now, in order to enable dashboard functionality to switch between dashboards, let’s create HTTP Request Header to process custom headers that are passed from the app when the dashboard is selected.
--	Select **GET** method
--	Go to HTTP Request Header section 
--	Select **Add header**
--	Set **X-Custom-Header** as the name and save
-
-After successful save your screen should look as on the screenshot below.
-
 ![](./Images/Picture5.png)
 
-5.	To deploy the API, follow these steps:
+4.	To deploy the API, follow these steps:
 -	Click on the *Actions* button and select Deploy API
 -	In the Deployment stage select the option *[New Stage]*
 -	Give your new stage a name, such as *embed*, and click on the Deploy button.
@@ -255,6 +247,44 @@ Open a terminal inside your Cloud9 instance and type the following commands:
 ```
 cd quicksightembedreact
 npm i amazon-quicksight-embedding-sdk
+```
+Replace the contents of your **App.css** file, that is used to style and layout your web page, with the content from the code snipped below:
+
+```
+body {
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+main {
+  margin: 20px;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 ```
 
 Replace the contents of your App.js file with the contents from the code snipped below:
@@ -289,9 +319,15 @@ function App() {
   }, [dashboardRef]);
 
   return (
-    <>
-      <h3>Your Dashboard</h3>
-      <div ref={dashboardRef} />
+   <>
+      <header>
+        <h1>Embedded <font color="orange">QuickSight</font>: Build Powerful Dashboards in React</h1>
+      </header>
+      <main>
+        <p>Welcome to the Quicksight dashboard embedding sample page</p>
+        <p>Please find below your embedded dashboard</p>
+        <div ref={dashboardRef} />
+      </main>
     </>
   );
 };
