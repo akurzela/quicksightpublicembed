@@ -258,6 +258,9 @@ On the **Manage QuickSight** screen, go to **Your Subscriptions**. Next, select 
 Verify if the QuickSight version is set to **Enterprise**. On the top left hand side, you should see the QuickSight version:
 ![](./Images/qs-8.png)
 
+Lastly, verify that you are subscribed to the monthly plan:
+![](./Images/qs-9.png)
+
 ## Step 7: Call Amazon API Gateway from your React application
 
 Open a terminal inside your Cloud9 instance and type the following commands: 
