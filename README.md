@@ -23,6 +23,10 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 
 If you are on **WebDevCon** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
 
+After accessing the console, please validate you are using region **us-east-1, North Virginia**:
+![](./Images/console-1.png)
+
+
 ## Step 0: Create your Cloud9 environment and your Amazon Quicksight dashboard
 
 ### Cloud9 Environment
