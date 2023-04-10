@@ -21,7 +21,7 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 
 ## AWS Workshop Portal
 
-If you are on **WebDevConf** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
+If you are on **WebDevCon** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
 
 ## Step 0: Create your Cloud9 environment and your Amazon Quicksight dashboard
 
@@ -30,7 +30,7 @@ In the AWS console, search for Cloud9 or use [this](https://console.aws.amazon.c
 
 ![](./Images/cloud9-create.png)
 
-Fill in the form using the same information from the images below:
+Next, fill in the form using the same information from the images below:
 ![](./Images/cloud9-wiz1.png)
 ![](./Images/cloud9-wiz2.png)
 
@@ -75,14 +75,24 @@ Navigate to the top right corner and ficlick on the *publish icon*. Next, select
 Select *Publish Dashboard as*, give it a name ie. *"My Awesome Dashboard"* and click on "Publish dashboard"
 ![](./Images/Quicksight_Step4.png)
 
-After publishing your dashboard, write down in a separate notepad `<YOUR_DASHBOARD_ID>` from the URL of your web browser. For your convenience, this is highlighted in the image below:
-![](./Images/qs-5.png)
+<!-- After publishing your dashboard, write down in a separate notepad `<YOUR_DASHBOARD_ID>` from the URL of your web browser. For your convenience, this is highlighted in the image below:
+![](./Images/qs-5.png) -->
 
 ## Step 1: Create your react application
 Go to your Cloud9 instance and create React app using `npx create-react-app quicksightembedreact` command. It will generate a React project for you.
 ![](./Images/Cloud9_Step1.png)
 
 ## Step 2: In your AWS account, set up permissions for unauthenticated viewers
+
+Before creating the IAM Policy and Role, run the following two commands on the terminal of your Cloud9 instance to retrieve the DASHBOARD_ID of your quicksight dashboard:
+```
+export acct=$(aws sts get-caller-identity --query Account --output text)
+aws quicksight list-dashboards --aws-account-id $acct --query DashboardSummaryList[0].DashboardId --output text
+```
+![](./Images/cloud9-4.png)
+
+Make sure to change in the policy below the value of the token **<YOUR_DASHBOARD_ID>** with the value of the Dashboard Id.
+
 Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your application will assume on behalf of the viewer. Go to **Policies** and select **Create policy** button. Next, choose a JSON tab and paste a policy that looks as following:
 ```
 {
@@ -110,6 +120,7 @@ Go to IAM. Create a policy in AWS Identity and Access Management (IAM) that your
     ]
 }
 ```
+
 Give your policy name like: **AnonymousEmbedPolicy** and select **Create policy** button.
 
 ![](./Images/Picture1.png)
@@ -120,14 +131,22 @@ Check the box next to the policy name and select **Next**.
 In the Name, Review, Create section, give your role a name like: **AnonymousEmbedRole**. Make sure that the policy name is included in the **Add permissions** section.
 ## Step 3: Generate anonymous embed URL lambda
 
-### Retrieving the Cloud9 hostname
+### Retrieving the Cloud9 domain
+
+<!-- We need to add the Cloud9 domain into allow list in Amazon Quicksight. Run the following two commands to get the domain of your Cloud9 instance:
+
+```
+export env=$(aws cloud9 list-environments --query environmentIds[0] --output text)
+echo "$(aws cloud9 describe-environments --environment-ids $env --query environments[0].id --output text).vfs.cloud9.us-east-1.amazonaws.com"
+``` -->
+
 On your Cloud9, click on *Preview* and *Preview Running Application*. 
 ![](./Images/cloud9-1.png)
 Cloud9 will try to open an emdedded browser and we need to click on the icon from the image below to try to open it a new browser window.
 ![](./Images/cloud9-2.png)
 Then, we need to copy the URL from the new browser window so we can use it on a later moment. For now, write down the URL in the format **https://#######################.vfs.cloud9.us-east-1.amazonaws.com** on a separate note. We will use this URL to replace the value of the placeholder `[CLOUD9URLPLACEHOLDER]` in the next step. 
 
-Make sure you **do not** add the forward slash at the end.
+Make sure you copy the URL including the protocol (https://) and **do not** add the forward slash at the end.
 
 ![](./Images/cloud9-3.png)
 
@@ -191,15 +210,15 @@ def lambda_handler(event, context):
                 }     
 ```
 
-Replace `[CLOUD9URLPLACEHOLDER]` with the value of the Cloud9 hostname that we obtained at the start of this step.
+Replace `[CLOUD9URLPLACEHOLDER]` with the value of the Cloud9 domain (https://#######################.vfs.cloud9.us-east-1.amazonaws.com) that we obtained at the start of this step.
 
 Next, go to **configuration** tab and in the General configuration select **Edit** button. Increase the timeout from 3 to 30 sec and select **Save** button.
 
 Then, go to the Environment variables and select Edit button. Add the following environment variables and select Save button.
 
-- DashboardIdList : <YOUR_DASHBOARD_ID> you obtained on Step 0, in the format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
-- DashboardNameList : `NAME_OF_YOUR_DASHBOARD`
-- DashboardRegion : `REGION_OF_YOUR_DASHBOARD`
+- DashboardIdList : <YOUR_DASHBOARD_ID> you obtained on Step 2, in the format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`
+- DashboardNameList : `My Awesome Dashboard`
+- DashboardRegion : `us-east-1`
 
 Your configuration should look **similar** to the example from the image below:
 
@@ -220,17 +239,7 @@ In the **GET** method setup select **Lambda Function** as an integration type, e
 
 ![](./Images/Picture4.png)
 
-4.	Now, in order to enable dashboard functionality to switch between dashboards, let’s create HTTP Request Header to process custom headers that are passed from the app when the dashboard is selected.
--	Select **GET** method
--	Go to HTTP Request Header section 
--	Select **Add header**
--	Set **X-Custom-Header** as the name and save
-
-After successful save your screen should look as on the screenshot below.
-
-![](./Images/Picture5.png)
-
-5.	To deploy the API, follow these steps:
+4.	To deploy the API, follow these steps:
 -	Click on the *Actions* button and select Deploy API
 -	In the Deployment stage select the option *[New Stage]*
 -	Give your new stage a name, such as *embed*, and click on the Deploy button.
@@ -255,6 +264,43 @@ Open a terminal inside your Cloud9 instance and type the following commands:
 ```
 cd quicksightembedreact
 npm i amazon-quicksight-embedding-sdk
+```
+Replace the contents of your App.css file, that is used to style and layout your web page, with the content from the code snipped below:
+```
+body {
+  background-color: #ffffff;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+header {
+  background-color: #f1f1f1;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+}
+
+main {
+  margin: 20px;
+  text-align: center;
+}
+
+p {
+  margin-bottom: 20px;
+}
+
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
 ```
 
 Replace the contents of your App.js file with the contents from the code snipped below:
@@ -289,9 +335,15 @@ function App() {
   }, [dashboardRef]);
 
   return (
-    <>
-      <h3>Your Dashboard</h3>
-      <div ref={dashboardRef} />
+   <>
+      <header>
+        <h1>Embedded <font color="orange">QuickSight</font>: Build Powerful Dashboards in React</h1>
+      </header>
+      <main>
+        <p>Welcome to the Quicksight dashboard embedding sample page</p>
+        <p>Please find below your embedded dashboard</p>
+        <div ref={dashboardRef} />
+      </main>
     </>
   );
 };
