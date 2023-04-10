@@ -23,10 +23,6 @@ Above, a user makes a request to Amazon API gateway that executes a Lambda funct
 
 If you are on **WebDevCon** we will provide you with accounts from Event Engine. In this case, please connect to the portal by clicking the following link or browsing to https://dashboard.eventengine.run/. You will need the Participant Hash the presenters are going to send you on Slack and your email address and password to login as an **employee**. 
 
-After accessing the console, please validate you are using region **us-east-1, North Virginia**:
-![](./Images/console-1.png)
-
-
 ## Step 0: Create your Cloud9 environment and your Amazon Quicksight dashboard
 
 ### Cloud9 Environment
@@ -243,6 +239,11 @@ In the **GET** method setup select **Lambda Function** as an integration type, e
 
 ![](./Images/Picture4.png)
 
+<<<<<<< HEAD
+=======
+![](./Images/Picture5.png)
+
+>>>>>>> 6e53502127772723324d561235deec7ec827e85e
 4.	To deploy the API, follow these steps:
 -	Click on the *Actions* button and select Deploy API
 -	In the Deployment stage select the option *[New Stage]*
@@ -262,9 +263,6 @@ On the **Manage QuickSight** screen, go to **Your Subscriptions**. Next, select 
 Verify if the QuickSight version is set to **Enterprise**. On the top left hand side, you should see the QuickSight version:
 ![](./Images/qs-8.png)
 
-Lastly, verify that you are subscribed to the monthly plan:
-![](./Images/qs-9.png)
-
 ## Step 7: Call Amazon API Gateway from your React application
 
 Open a terminal inside your Cloud9 instance and type the following commands: 
@@ -272,8 +270,12 @@ Open a terminal inside your Cloud9 instance and type the following commands:
 cd quicksightembedreact
 npm i amazon-quicksight-embedding-sdk
 ```
+<<<<<<< HEAD
+Replace the contents of your App.css file, that is used to style and layout your web page, with the content from the code snipped below:
+=======
 Replace the contents of your **App.css** file, that is used to style and layout your web page, with the content from the code snipped below:
 
+>>>>>>> 6e53502127772723324d561235deec7ec827e85e
 ```
 body {
   background-color: #ffffff;
