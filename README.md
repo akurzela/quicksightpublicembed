@@ -265,12 +265,8 @@ Open a terminal inside your Cloud9 instance and type the following commands:
 cd quicksightembedreact
 npm i amazon-quicksight-embedding-sdk
 ```
-<<<<<<< HEAD
-Replace the contents of your App.css file, that is used to style and layout your web page, with the content from the code snipped below:
-=======
 Replace the contents of your **App.css** file, that is used to style and layout your web page, with the content from the code snipped below:
 
->>>>>>> 6e53502127772723324d561235deec7ec827e85e
 ```
 body {
   background-color: #ffffff;
